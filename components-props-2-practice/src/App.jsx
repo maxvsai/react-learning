@@ -1,45 +1,109 @@
-// TODO 1: Create a <Card> component that accepts:
-//   - title (string) — displayed as an <h3>
-//   - children (any JSX) — the main content area
-//   - footer (string, optional) — shown at the bottom with a top border
-// Hint: use {children} in the return to render whatever is placed between <Card>...</Card>
+// Card Component
+function Card({ title, children, footer }) {
+  return (
+    <div
+      style={{
+        border: "1px solid #ddd",
+        borderRadius: "10px",
+        padding: "16px",
+        marginBottom: "16px",
+        boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+      }}
+    >
+      <h3 style={{ marginTop: 0 }}>{title}</h3>
 
-// TODO 2: Create a <Badge> component that accepts:
-//   - text (string) — the badge label
-//   - color (string, default "blue") — one of "blue", "green", "red", "yellow"
-// Use default parameter syntax: function Badge({ text, color = "blue" })
-// Style it as a small pill (rounded background, colored text)
+      <div>{children}</div>
 
-// TODO 3: Create a <ProductCard> component that accepts:
-//   - name (string)
-//   - price (number)
-//   - tags (array of strings, default [])
-//   - inStock (boolean, default true)
-// It should:
-//   - Use your <Card> component for layout
-//   - Show the name as the card title
-//   - Display the price formatted as "$XX.XX"
-//   - Map over tags and render a <Badge> for each one
-//   - Show "In Stock" (green) or "Out of Stock" (red) using a Badge
-//   - Use the footer to display the price
+      {footer && (
+        <div
+          style={{
+            borderTop: "1px solid #eee",
+            marginTop: "12px",
+            paddingTop: "8px",
+            fontWeight: "bold",
+          }}
+        >
+          {footer}
+        </div>
+      )}
+    </div>
+  )
+}
 
-// TODO 4: Create a products array with 3+ products and render them using <ProductCard>
-// Use the spread operator to pass props: <ProductCard key={...} {...product} />
-
-export default function App() {
-  // TODO 4: Define your products array here
-  // const products = [
-  //   { name: "Wireless Mouse", price: 29.99, tags: ["tech", "office"], inStock: true },
-  //   { name: "Mechanical Keyboard", price: 89.99, tags: ["tech", "gaming"], inStock: true },
-  //   { name: "USB-C Hub", price: 45.00, tags: ["tech"], inStock: false },
-  // ];
+// Badge Component
+function Badge({ text, color = "blue" }) {
+  const colors = {
+    blue: { background: "#e0f2ff", color: "#0369a1" },
+    green: { background: "#dcfce7", color: "#166534" },
+    red: { background: "#fee2e2", color: "#991b1b" },
+    yellow: { background: "#fef9c3", color: "#854d0e" },
+  }
 
   return (
-    <div style={{ maxWidth: "600px", margin: "40px auto", fontFamily: "system-ui" }}>
-      <h1>🛒 Product Catalog</h1>
-      <p>Build your components below!</p>
+    <span
+      style={{
+        ...colors[color],
+        padding: "4px 10px",
+        borderRadius: "999px",
+        fontSize: "12px",
+        marginRight: "6px",
+        display: "inline-block",
+      }}
+    >
+      {text}
+    </span>
+  )
+}
 
-      {/* TODO 4: Map over products and render <ProductCard> for each */}
+// ProductCard Component
+function ProductCard({ name, price, tags = [], inStock = true }) {
+  return (
+    <Card title={name} footer={`$${price.toFixed(2)}`}>
+      <div style={{ marginBottom: "8px" }}>
+        {tags.map((tag, index) => (
+          <Badge key={index} text={tag} />
+        ))}
+      </div>
+
+      <Badge
+        text={inStock ? "In Stock" : "Out of Stock"}
+        color={inStock ? "green" : "red"}
+      />
+    </Card>
+  )
+}
+
+// App Component
+export default function App() {
+  const products = [
+    {
+      name: "Wireless Mouse",
+      price: 29.99,
+      tags: ["tech", "office"],
+      inStock: true,
+    },
+    {
+      name: "Mechanical Keyboard",
+      price: 89.99,
+      tags: ["tech", "gaming"],
+      inStock: true,
+    },
+    { name: "USB-C Hub", price: 45.0, tags: ["tech"], inStock: false },
+  ]
+
+  return (
+    <div
+      style={{
+        maxWidth: "600px",
+        margin: "40px auto",
+        fontFamily: "system-ui",
+      }}
+    >
+      <h1>🛒 Product Catalog</h1>
+
+      {products.map((product, index) => (
+        <ProductCard key={index} {...product} />
+      ))}
     </div>
-  );
+  )
 }
